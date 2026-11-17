@@ -1,0 +1,10 @@
+guest@shohpizza.test
+malika@shohpizza.test
+aziz@shohpizza.test
+info@shohpizza.test
+student@shohpizza.test
+support@shohpizza.test
+manager@shohpizza.test
+service@shohpizza.test
+orders@shohpizza.test
+admin-demo@shohpizza.test

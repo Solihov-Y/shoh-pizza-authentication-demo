@@ -1,0 +1,62 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS users (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ full_name TEXT NOT NULL,
+ email TEXT UNIQUE NOT NULL,
+ password_salt TEXT NOT NULL,
+ password_hash TEXT NOT NULL,
+ role TEXT NOT NULL CHECK (role IN ('customer','manager')),
+ mfa_code TEXT NOT NULL,
+ created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS pizzas (
+ id INTEGER PRIMARY KEY,
+ name TEXT NOT NULL,
+ category TEXT NOT NULL,
+ ingredients TEXT NOT NULL,
+ price_sum INTEGER NOT NULL,
+ image TEXT NOT NULL,
+ badge TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS orders (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ user_id INTEGER NOT NULL REFERENCES users(id),
+ total_sum INTEGER NOT NULL,
+ status TEXT NOT NULL DEFAULT 'Tayyorlanmoqda',
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS order_items (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ order_id INTEGER NOT NULL REFERENCES orders(id),
+ pizza_id INTEGER NOT NULL REFERENCES pizzas(id),
+ qty INTEGER NOT NULL CHECK (qty > 0),
+ price_sum INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS sessions (
+ token_hash TEXT PRIMARY KEY,
+ user_id INTEGER NOT NULL REFERENCES users(id),
+ csrf TEXT NOT NULL,
+ expires_at INTEGER NOT NULL,
+ mfa_verified INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE IF NOT EXISTS pending_mfa (
+ token_hash TEXT PRIMARY KEY,
+ user_id INTEGER NOT NULL REFERENCES users(id),
+ attempts INTEGER NOT NULL DEFAULT 0,
+ expires_at INTEGER NOT NULL,
+ remember INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS password_resets (
+ token_hash TEXT PRIMARY KEY,
+ user_id INTEGER NOT NULL REFERENCES users(id),
+ expires_at INTEGER NOT NULL,
+ used INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS demo_mailbox (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ to_email TEXT NOT NULL,
+ subject TEXT NOT NULL,
+ demo_link TEXT NOT NULL,
+ created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);

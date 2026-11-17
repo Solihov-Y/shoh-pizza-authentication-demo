@@ -1,0 +1,28 @@
+YF CYBERSECURITY — 5-DARS, AUTHENTICATION AMALIYOT (SHOH PIZZA)
+
+Shoh Pizza oddiy ishlaydigan onlayn pitsa sayti. Zaifliklar alohida LAB sahifada emas; haqiqiy sayt funksiyalarida, faqat mahalliy sun’iy ma’lumotlarda ishlaydi.
+
+KIRISH (1–2 daqiqa)
+1. Bosh sahifani, menyuni, savatchani ko‘rsating.
+2. Login oynasiga o‘ting. Bu 2FA, sessiya va reset jarayonlariga bog‘liq haqiqiy HTTP so‘rovlardan foydalanadi.
+
+USERNAME ENUMERATION (2 daqiqa)
+3. O‘zingizdagi Burp Proxy → HTTP history’da POST /api/auth/login so‘rovini kuzating.
+4. Noma’lum demo email va mavjud emailni bir xil noto‘g‘ri parol bilan solishtiring: kod ikkalasida 401, lekin matn turli. Bu xatolik hisob mavjudligini bildirishini tushuntiring.
+
+RATE LIMITING (1 daqiqa)
+5. O‘sha login formasi uchun noto‘g‘ri urinishlardan keyin cheklov yo‘qligini ko‘rsating. Parol taxmin qilish / avtomatlashtirish emas, oddiy HTTP javoblarining farqini kuzating.
+
+2FA VA SESSION (2 daqiqa)
+6. Quyidagi test hisobda to‘g‘ri parol bilan tizimga kiring: student@shohpizza.test / Pizza2026!. Kodni KIRITISHDAN OLDIN Burp orqali o‘z buyurtmalar so‘rovingizni ko‘ring: dastur noto‘g‘ri pre-MFA sessiya bergani uchun unga javob qaytaradi. Bu zaif dizayn.
+7. So‘ng 246810 kodini kiriting, to‘liq seans va buyurtmani ko‘rsating. Menejer API oldindan ham himoyalangan, mijoz administratorga aylanmaydi.
+
+LOGOUT VA RECOVERY (2 daqiqa)
+8. Logout’dan so‘ng Burp’da eski o‘quv sessiya cookie’si hali ishlashini tekshiring. Bu server logout’da sessiyani bekor qilmasligidan keladi.
+9. Parolni unutdingizmi sahifasida demo email orqali reset so‘rovini ko‘rsating. Noma’lum va mavjud email uchun javoblar har xil. O‘quv xati lokal mailbox endpointida saqlanadi.
+
+HIMOYA (2 daqiqa)
+10. Serverni to‘xtating. Yangi, alohida DB nusxasi bilan python3 app.py --secure --port 8771 rejimini ishga tushiring. Xuddi shu so‘rovlarni qiyoslang: xabarlar bir xil, urinishlar 429 bilan cheklanadi, MFA tugamaguncha buyurtmaga kirilmaydi, logout eskirgan cookie’ni rad etadi va reset bir martalik.
+11. Xulosa: autentifikatsiya faqat parolni tekshirish emas — 2FA, sessiya, recovery va monitoring birgalikda ishlashi kerak.
+
+BARCHA AKKAUNTLAR FAKE. TIZIMNI INTERNETGA CHIQARMANG.

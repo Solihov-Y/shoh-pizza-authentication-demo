@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.log
+demo_passwords.txt
+demo_usernames.txt
